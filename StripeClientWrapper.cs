@@ -1,5 +1,6 @@
 ﻿using Stripe;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Flexinets.Stripe
@@ -19,8 +20,7 @@ namespace Flexinets.Stripe
         {
             return await new StripeSubscriptionService().CreateAsync(stripeCustomerId, new StripeSubscriptionCreateOptions
             {
-                PlanId = planId,
-                Quantity = quantity,
+                Items = new List<StripeSubscriptionItemOption> { new StripeSubscriptionItemOption { Quantity = quantity, PlanId = planId } },
                 TaxPercent = vatExempt ? 0 : 25m,
                 Billing = paymentMethod == PaymentMethod.CreditCard ? StripeBilling.ChargeAutomatically : StripeBilling.SendInvoice,
                 DaysUntilDue = paymentMethod == PaymentMethod.CreditCard ? null : (Int32?)30
