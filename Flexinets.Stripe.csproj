@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
-    <AssemblyVersion>1.0.91.0</AssemblyVersion>
-    <FileVersion>1.0.91.0</FileVersion>
+    <AssemblyVersion>1.0.175.0</AssemblyVersion>
+    <FileVersion>1.0.175.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
@@ -17,11 +17,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Stripe.net" Version="15.6.1" />
+    <PackageReference Include="Stripe.net" Version="17.11.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="NETStandard.Library" Version="2.0.1" />
+    <PackageReference Update="NETStandard.Library" Version="2.0.3" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Flexinets.Stripe
 {
@@ -23,8 +24,34 @@ namespace Flexinets.Stripe
                 Items = new List<StripeSubscriptionItemOption> { new StripeSubscriptionItemOption { Quantity = quantity, PlanId = planId } },
                 TaxPercent = vatExempt ? 0 : 25m,
                 Billing = paymentMethod == PaymentMethod.CreditCard ? StripeBilling.ChargeAutomatically : StripeBilling.SendInvoice,
-                DaysUntilDue = paymentMethod == PaymentMethod.CreditCard ? null : (Int32?)30
+                DaysUntilDue = paymentMethod == PaymentMethod.CreditCard ? null : (Int32?)30,
+                TrialFromPlan = true
             });
+        }
+
+
+        /// <summary>
+        /// Updates the quantity of the primary (first and hopefully only) subscription on a customer
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
+        public static async Task<StripeSubscription> UpdateSubscriptionQuantityAsync(String customerId, Int32 quantity)
+        {
+            // todo this assumes our customers only have one subscription and item and will fail miserably if there are more
+            var customer = await new StripeCustomerService().GetAsync(customerId);
+            var subscription = customer.Subscriptions.Data.SingleOrDefault(o => !o.CanceledAt.HasValue);
+            var item = subscription.Items.Data.SingleOrDefault();
+
+            var items = new List<StripeSubscriptionItemUpdateOption> {
+                new StripeSubscriptionItemUpdateOption {
+                    Id = item.Id,
+                    PlanId = item.Plan.Id,
+                    Quantity = quantity
+                }
+            };
+
+            return await new StripeSubscriptionService().UpdateAsync(subscription.Id, new StripeSubscriptionUpdateOptions { Items = items });
         }
 
 
